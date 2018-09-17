@@ -443,10 +443,38 @@ RCT_EXPORT_METHOD(getStatus: (RCTResponseSenderBlock) callback)
                                       @"", MPMediaItemPropertyAlbumArtist,
                                       appName ? appName : @"AppName", MPMediaItemPropertyTitle,
                                       [NSNumber numberWithFloat:isPlaying ? 1.0f : 0.0], MPNowPlayingInfoPropertyPlaybackRate, nil];
-      [MPNowPlayingInfoCenter defaultCenter].nowPlayingInfo = nowPlayingInfo;
+      // [MPNowPlayingInfoCenter defaultCenter].nowPlayingInfo = nowPlayingInfo;
+       
+       dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+       dispatch_async(queue, ^{
+           NSMutableDictionary *songInfo = [NSMutableDictionary dictionaryWithDictionary:nowPlayingInfo];
+           /*
+           NSURL *imageUrl = [NSURL URLWithString:@"https://nerdybirdy.net/reimmund/images/icon_512.jpg"];
+           NSData *imageData = [NSData dataWithContentsOfURL:imageUrl];
+           UIImage *artworkImage = [UIImage imageWithData:imageData];
+            */
+           UIImage *artworkImage = [UIImage imageNamed:@"AppIcon40x40"];
+
+           NSLog(@"artworkImage dimensions: %f x %f", artworkImage.size.width, artworkImage.size.height);
+           if(artworkImage)
+           {
+               MPMediaItemArtwork *albumArt = [[MPMediaItemArtwork alloc] initWithImage: artworkImage];
+               // MPMediaItemArtwork *albumArt = [[MPMediaItemArtwork alloc] initWithBoundsSize:<#(CGSize)#> requestHandler:<#^UIImage * _Nonnull(CGSize size)requestHandler#>];
+               // [songInfo setValue:@"NEW TITLE" forKey:MPMediaItemPropertyTitle];
+               [songInfo setValue:albumArt forKey:MPMediaItemPropertyArtwork];
+           }
+           MPNowPlayingInfoCenter *infoCenter = [MPNowPlayingInfoCenter defaultCenter];
+           infoCenter.nowPlayingInfo = songInfo;
+       });
+
    } else {
       [MPNowPlayingInfoCenter defaultCenter].nowPlayingInfo = nil;
    }
 }
+
+- (void)updateControlCenterImage:(NSURL *)imageUrl
+{
+}
+
 
 @end
