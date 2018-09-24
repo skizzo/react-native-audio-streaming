@@ -55,7 +55,6 @@ RCT_EXPORT_MODULE()
    }
 }
 
-
 - (void)dealloc
 {
    [self unregisterAudioInterruptionNotifications];
@@ -63,8 +62,18 @@ RCT_EXPORT_MODULE()
    [self.audioPlayer setDelegate:nil];
 }
 
+#pragma mark - Public API
 
-#pragma mark - Pubic API
+RCT_EXPORT_METHOD(updateMediaCenterImageUrl:(NSString *) imageUrl)
+{
+    self.mediaCenterImageUrl = imageUrl;
+}
+
+RCT_EXPORT_METHOD(updateMediaCenterAppName:(NSString *) appName)
+{
+    self.mediaCenterAppName = appName;
+}
+
 
 RCT_EXPORT_METHOD(play:(NSString *) streamUrl options:(NSDictionary *)options)
 {
@@ -438,6 +447,11 @@ RCT_EXPORT_METHOD(getStatus: (RCTResponseSenderBlock) callback)
       // MPMediaItemArtwork *artwork = [[MPMediaItemArtwork alloc]initWithImage:[UIImage imageNamed:@"webradio1"]];
    
       NSString* appName = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleName"];
+       
+       if (self.mediaCenterAppName != nil) {
+           appName = self.mediaCenterAppName;
+       }
+       
       NSDictionary *nowPlayingInfo = [NSDictionary dictionaryWithObjectsAndKeys:
                                       self.currentSong ? self.currentSong : @"", MPMediaItemPropertyAlbumTitle,
                                       @"", MPMediaItemPropertyAlbumArtist,
@@ -454,6 +468,10 @@ RCT_EXPORT_METHOD(getStatus: (RCTResponseSenderBlock) callback)
            UIImage *artworkImage = [UIImage imageWithData:imageData];
             */
            UIImage *artworkImage = [UIImage imageNamed:@"AppIcon40x40"];
+           
+           if (self.mediaCenterImageUrl != nil) {
+               artworkImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:self.mediaCenterImageUrl]]];
+           }
 
            NSLog(@"artworkImage dimensions: %f x %f", artworkImage.size.width, artworkImage.size.height);
            if(artworkImage)

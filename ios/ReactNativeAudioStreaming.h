@@ -12,6 +12,9 @@
 @property (nonatomic, readwrite) NSString *lastUrlString;
 @property (nonatomic, retain) NSString *currentSong;
 
+@property (nonatomic, readwrite) NSString *mediaCenterAppName;
+@property (nonatomic, readwrite) NSString *mediaCenterImageUrl;
+
 - (void)play:(NSString *) streamUrl options:(NSDictionary *)options;
 - (void)pause;
 
