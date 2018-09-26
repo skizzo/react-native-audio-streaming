@@ -92,6 +92,12 @@ public class ReactNativeAudioStreamingModule extends ReactContextBaseJavaModule
     playInternal();
   }
 
+  @ReactMethod public void updateMediaCenterAppName (String appName) {
+  }
+
+  @ReactMethod public void updateMediaCenterImageUrl (String imageUrl) {
+  }
+
   private void playInternal() {
     signal.play();
     if (shouldShowNotification) {
